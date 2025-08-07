@@ -9,13 +9,34 @@
     const amount = urlParams.get('amount');
 
     var options = {
-      "key": "rzp_live_eQbOPFFDxRfzu1", // Replace with your Razorpay Key ID
-      "amount": amount * 100, // Amount in paise
+      "key": "rzp_live_eQbOPFFDxRfzu1", // Razorpay Key ID
+      "amount": amount * 100,
       "currency": "INR",
       "name": "My App",
       "description": "Dynamic Payment",
       "handler": function (response){
           alert("Payment Successful: " + response.razorpay_payment_id);
+
+          // Send payment status to Firebase
+          fetch("https://arcontrol-fcc95-default-rtdb.firebaseio.com/payments/last.json", { 
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                status: "success",
+                amount: amount,
+                payment_id: response.razorpay_payment_id,
+                timestamp: new Date().toISOString()
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              console.log("Firebase update success", data);
+          })
+          .catch(err => {
+              console.error("Firebase update failed", err);
+          });
       },
       "prefill": {
           "name": "PLUNTX",
@@ -26,10 +47,9 @@
           "color": "#F37254"
       }
     };
+
     var rzp1 = new Razorpay(options);
     rzp1.open();
   </script>
 </body>
 </html>
-
-
