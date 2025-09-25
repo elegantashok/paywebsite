@@ -17,8 +17,8 @@
       "handler": function (response){
           alert("Payment Successful: " + response.razorpay_payment_id);
 
-          // Send payment status to Firebase
-          fetch("https://arcontrol-fcc95-default-rtdb.firebaseio.com/payments/last.json", { 
+          // Send payment status to Firebase https://arcontrol-fcc95-default-rtdb.firebaseio.com
+          fetch("https://alert-aria-372004-default-rtdb.firebaseio.com/payments/last.json", { 
               method: "PUT",
               headers: {
                 "Content-Type": "application/json"
@@ -53,3 +53,4 @@
   </script>
 </body>
 </html>
+
