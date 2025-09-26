@@ -17,7 +17,7 @@
       "handler": function (response){
           alert("Payment Successful: " + response.razorpay_payment_id);
 
-          // Send payment status to Firebase https://arcontrol-fcc95-default-rtdb.firebaseio.com
+          // Send payment status to Firebase
           fetch("https://alert-aria-372004-default-rtdb.firebaseio.com/CIET/payments.json", { 
               method: "PUT",
               headers: {
@@ -33,6 +33,24 @@
           .then(res => res.json())
           .then(data => {
               console.log("Firebase update success", data);
+
+              // After 1 minute, update status to "waiting"
+              setTimeout(() => {
+                  fetch("https://alert-aria-372004-default-rtdb.firebaseio.com/CIET/payments/status.json", {
+                      method: "PUT",
+                      headers: {
+                          "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify("waiting")
+                  })
+                  .then(res => res.json())
+                  .then(data => {
+                      console.log("Status updated to waiting", data);
+                  })
+                  .catch(err => {
+                      console.error("Failed to update status to waiting", err);
+                  });
+              }, 60000);  // 60000 ms = 1 minute
           })
           .catch(err => {
               console.error("Firebase update failed", err);
@@ -53,5 +71,3 @@
   </script>
 </body>
 </html>
-
-
